@@ -81,22 +81,19 @@ class Plotter {
     }
 }
 
-export default class ScatPlotter {
+export class ScatPlotter {
     axisX: Axis
     axisY: Axis
     plots: Plot[]
-    plotter: Plotter
 
     constructor({ xAxis, yAxis, plots }: { xAxis: Axis, yAxis: Axis, plots: Plot[] }) {
         this.axisX = xAxis
         this.axisY = yAxis
         this.plots = plots
-
-        this.plotter = new Plotter()
     }
 
     build(): Plotter {
-        const plotter = this.plotter
+        const plotter = new Plotter()
 
         // differentiate min/max
         if (this.axisX.min === this.axisX.max) {
@@ -222,10 +219,11 @@ export default class ScatPlotter {
     }
 
     prettyprint() {
+        const plotter = this.build()
         const isNode = typeof window === 'undefined'
         const args: string[] = []
 
-        const str = Array.from(this.plotter.data).map(row => {
+        const str = Array.from(plotter.data).map(row => {
             if (!row) return ''
 
             return Array.from(row).map(item => {
@@ -247,7 +245,8 @@ export default class ScatPlotter {
     }
 
     stringify() {
-        return Array.from(this.plotter.data).map(row => {
+        const plotter = this.build()
+        return Array.from(plotter.data).map(row => {
             if (!row) return ''
 
             return Array.from(row).map(item => {
@@ -259,4 +258,8 @@ export default class ScatPlotter {
             }).join('')
         }).join('\n')
     }
+}
+
+export default function (params: { xAxis: Axis, yAxis: Axis, plots: Plot[] }): ScatPlotter {
+    return new ScatPlotter(params)
 }
