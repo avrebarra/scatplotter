@@ -19,12 +19,9 @@ export enum Color {
 }
 
 type Axis = {
-    label: string
     length: number
     min: number
     max: number
-    color?: Color
-    flip?: boolean
 }
 
 type Plot = {
@@ -50,7 +47,7 @@ class Plotter {
         this.data[params.y][params.x] = { char: params.char, color: params.color }
     }
 
-    horizonalText(params: { x: number, y: number, text: string, align: Alignment, color: Color }) {
+    horizontalText(params: { x: number, y: number, text: string, align: Alignment, color: Color }) {
         params.text = ('' + params.text)
 
         if (params.align === Alignment.Right) {
@@ -107,20 +104,20 @@ export class ScatPlotter {
         const leftMargin = Math.max(('' + this.axisY.min).length, ('' + this.axisY.max).length) + 1
 
         // print border
-        plotter.horizonalText({
+        plotter.horizontalText({
             x: leftMargin,
             y: topMargin,
             text: '-'.repeat(this.axisX.length),
             align: 0,
-            color: this.axisX.color || Color.Black,
+            color: Color.Red,
         })
 
-        plotter.horizonalText({
+        plotter.horizontalText({
             x: leftMargin,
             y: topMargin + this.axisY.length,
             text: '-'.repeat(this.axisX.length),
             align: 0,
-            color: this.axisX.color || Color.Black,
+            color: Color.Red,
         })
 
         plotter.verticalText({
@@ -128,7 +125,7 @@ export class ScatPlotter {
             y: topMargin,
             text: '|'.repeat(this.axisY.length),
             align: 0,
-            color: this.axisY.color || Color.Black,
+            color: Color.Red,
         })
 
         plotter.verticalText({
@@ -136,80 +133,75 @@ export class ScatPlotter {
             y: topMargin,
             text: '|'.repeat(this.axisY.length),
             align: 0,
-            color: this.axisY.color || Color.Black,
+            color: Color.Red,
         })
 
         // print corner
-        plotter.setChar({ color: Color.Black, x: leftMargin, y: topMargin, char: '+' })
-        plotter.setChar({ color: Color.Black, x: leftMargin + this.axisX.length, y: topMargin, char: '+' })
-        plotter.setChar({ color: Color.Black, x: leftMargin + this.axisX.length, y: topMargin + this.axisY.length, char: '+' })
-        plotter.setChar({ color: Color.Black, x: leftMargin, y: topMargin + this.axisY.length, char: '+' })
+        plotter.setChar({ color: Color.Red, x: leftMargin, y: topMargin, char: '+' })
+        plotter.setChar({ color: Color.Red, x: leftMargin + this.axisX.length, y: topMargin, char: '+' })
+        plotter.setChar({ color: Color.Red, x: leftMargin + this.axisX.length, y: topMargin + this.axisY.length, char: '+' })
+        plotter.setChar({ color: Color.Red, x: leftMargin, y: topMargin + this.axisY.length, char: '+' })
 
         // print axis label
-        plotter.horizonalText({
+        plotter.horizontalText({
             x: leftMargin,
             y: 0,
-            text: this.axisY.label,
+            text: '',
             align: Alignment.Center,
-            color: this.axisY.color || Color.Black,
+            color: Color.Red,
         })
-        plotter.horizonalText({
+        plotter.horizontalText({
             x: leftMargin + this.axisX.length + 2,
             y: topMargin + this.axisY.length,
             align: Alignment.Center,
-            text: this.axisX.label,
-            color: this.axisX.color || Color.Black,
+            text: '',
+            color: Color.Red,
         })
 
         // print minX/maxX
         let [minXPos, maxXPos] = [leftMargin, leftMargin + this.axisX.length]
-        if (this.axisX.flip) {
-            [minXPos, maxXPos] = [maxXPos, minXPos]
-        }
-        plotter.horizonalText({
+
+        plotter.horizontalText({
             x: minXPos,
             y: topMargin + this.axisY.length + 1,
             text: this.axisX.min.toString(),
             align: Alignment.Center,
-            color: this.axisX.color || Color.Black,
+            color: Color.Red,
         })
-        plotter.horizonalText({
+        plotter.horizontalText({
             x: maxXPos,
             y: topMargin + this.axisY.length + 1,
             text: this.axisX.max.toString(),
             align: Alignment.Center,
-            color: this.axisX.color || Color.Black,
+            color: Color.Red,
         })
 
         // print minY/maxY
         let [minYPos, maxYPos] = [topMargin + this.axisY.length, topMargin]
-        if (this.axisY.flip) {
-            [minYPos, maxYPos] = [maxYPos, minYPos]
-        }
-        plotter.horizonalText({
+
+        plotter.horizontalText({
             x: leftMargin - 1,
             y: maxYPos,
             text: this.axisY.max.toString(),
             align: Alignment.Right,
-            color: this.axisY.color || Color.Black,
+            color: Color.Red,
         })
-        plotter.horizonalText({
+        plotter.horizontalText({
             x: leftMargin - 1,
             y: minYPos,
             text: this.axisY.min.toString(),
             align: Alignment.Right,
-            color: this.axisY.color || Color.Black,
+            color: Color.Red,
         })
 
         // print points
         this.plots.forEach(({ x, y, label, color }) => {
             const xStep = Math.floor((x - this.axisX.min) * this.axisX.length / (this.axisX.max - this.axisX.min))
             const yStep = Math.floor((y - this.axisY.min) * this.axisY.length / (this.axisY.max - this.axisY.min))
-            const xFlip = this.axisX.flip ? this.axisX.length - xStep : xStep
-            const yFlip = this.axisY.flip ? yStep : this.axisY.length - yStep
+
             plotter.setChar({
-                x: leftMargin + xFlip,
-                y: topMargin + yFlip,
+                x: leftMargin + xStep,
+                y: topMargin + this.axisY.length - yStep,
                 char: label || '*',
                 color,
             })

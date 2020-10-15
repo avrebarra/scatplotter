@@ -4,16 +4,12 @@ describe('Service', function () {
     it('could be instantiated', function () {
         const sp = scatplotter({
             xAxis: {
-                color: Color.Black,
                 length: 85,
-                label: '',
                 max: 100,
                 min: 0,
             },
             yAxis: {
-                color: Color.Black,
                 length: 20,
-                label: '',
                 max: 100,
                 min: 0,
             },
@@ -30,16 +26,12 @@ describe('Service', function () {
     it('could build string', function () {
         const sp = scatplotter({
             xAxis: {
-                color: Color.Black,
                 length: 85,
-                label: '',
                 max: 100,
                 min: 0,
             },
             yAxis: {
-                color: Color.Black,
                 length: 20,
-                label: '',
                 max: 100,
                 min: 0,
             },
@@ -58,16 +50,12 @@ describe('Service', function () {
     it('could prettyprint', function () {
         const sp = scatplotter({
             xAxis: {
-                color: Color.Black,
                 length: 85,
-                label: '',
                 max: 100,
                 min: 0,
             },
             yAxis: {
-                color: Color.Black,
                 length: 20,
-                label: '',
                 max: 100,
                 min: 0,
             },
